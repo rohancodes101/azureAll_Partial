@@ -1,0 +1,2536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Number Grid</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .question {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .question.clicked {
+            background-color: #4CAF50;
+            /* Green when clicked */
+            color: white;
+        }
+
+        .clear-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .clear-btn:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid" id="questionGrid"></div>
+    <button class="clear-btn" id="clearButton">Clear All</button>
+
+    <script>
+        const data = [
+            {
+                "question_number": 1,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56828-exam-az-104-topic-1-question-1-discussion/"
+            },
+            {
+                "question_number": 2,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57044-exam-az-104-topic-1-question-2-discussion/"
+            },
+            {
+                "question_number": 3,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57111-exam-az-104-topic-1-question-3-discussion/"
+            },
+            {
+                "question_number": 4,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56829-exam-az-104-topic-1-question-4-discussion/"
+            },
+            {
+                "question_number": 5,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/62817-exam-az-104-topic-1-question-5-discussion/"
+            },
+            {
+                "question_number": 6,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57782-exam-az-104-topic-1-question-6-discussion/"
+            },
+            {
+                "question_number": 7,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51838-exam-az-104-topic-7-question-1-discussion/"
+            },
+            {
+                "question_number": 8,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56992-exam-az-104-topic-1-question-8-discussion/"
+            },
+            {
+                "question_number": 9,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57081-exam-az-104-topic-1-question-9-discussion/"
+            },
+            {
+                "question_number": 10,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/29475-exam-az-104-topic-10-question-1-discussion/"
+            },
+            {
+                "question_number": 11,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/62873-exam-az-104-topic-11-question-1-discussion/"
+            },
+            {
+                "question_number": 12,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56338-exam-az-104-topic-1-question-12-discussion/"
+            },
+            {
+                "question_number": 13,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57481-exam-az-104-topic-1-question-13-discussion/"
+            },
+            {
+                "question_number": 14,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57078-exam-az-104-topic-1-question-14-discussion/"
+            },
+            {
+                "question_number": 15,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57482-exam-az-104-topic-1-question-15-discussion/"
+            },
+            {
+                "question_number": 16,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56406-exam-az-104-topic-1-question-16-discussion/"
+            },
+            {
+                "question_number": 17,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56352-exam-az-104-topic-1-question-17-discussion/"
+            },
+            {
+                "question_number": 18,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57002-exam-az-104-topic-1-question-18-discussion/"
+            },
+            {
+                "question_number": 19,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38859-exam-az-104-topic-2-question-19-discussion/"
+            },
+            {
+                "question_number": 20,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/62875-exam-az-104-topic-1-question-20-discussion/"
+            },
+            {
+                "question_number": 21,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57060-exam-az-104-topic-1-question-21-discussion/"
+            },
+            {
+                "question_number": 22,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/62878-exam-az-104-topic-1-question-22-discussion/"
+            },
+            {
+                "question_number": 23,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/62880-exam-az-104-topic-1-question-23-discussion/"
+            },
+            {
+                "question_number": 24,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57486-exam-az-104-topic-1-question-24-discussion/"
+            },
+            {
+                "question_number": 25,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57485-exam-az-104-topic-1-question-25-discussion/"
+            },
+            {
+                "question_number": 26,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/74289-exam-az-104-topic-1-question-26-discussion/"
+            },
+            {
+                "question_number": 27,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57495-exam-az-104-topic-1-question-27-discussion/"
+            },
+            {
+                "question_number": 28,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57646-exam-az-104-topic-1-question-28-discussion/"
+            },
+            {
+                "question_number": 29,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51333-exam-az-104-topic-3-question-29-discussion/"
+            },
+            {
+                "question_number": 30,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57109-exam-az-104-topic-1-question-30-discussion/"
+            },
+            {
+                "question_number": 31,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38239-exam-az-104-topic-3-question-31-discussion/"
+            },
+            {
+                "question_number": 32,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57004-exam-az-104-topic-1-question-32-discussion/"
+            },
+            {
+                "question_number": 33,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56963-exam-az-104-topic-1-question-33-discussion/"
+            },
+            {
+                "question_number": 34,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/75826-exam-az-104-topic-3-question-34-discussion/"
+            },
+            {
+                "question_number": 35,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56297-exam-az-104-topic-1-question-35-discussion/"
+            },
+            {
+                "question_number": 36,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57347-exam-az-104-topic-1-question-36-discussion/"
+            },
+            {
+                "question_number": 37,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57225-exam-az-104-topic-1-question-37-discussion/"
+            },
+            {
+                "question_number": 38,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78362-exam-az-104-topic-1-question-38-discussion/"
+            },
+            {
+                "question_number": 39,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/67644-exam-az-104-topic-3-question-39-discussion/"
+            },
+            {
+                "question_number": 40,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78364-exam-az-104-topic-1-question-40-discussion/"
+            },
+            {
+                "question_number": 41,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51274-exam-az-104-topic-2-question-41-discussion/"
+            },
+            {
+                "question_number": 42,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78486-exam-az-104-topic-2-question-42-discussion/"
+            },
+            {
+                "question_number": 43,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38284-exam-az-104-topic-4-question-43-discussion/"
+            },
+            {
+                "question_number": 44,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/62896-exam-az-104-topic-2-question-44-discussion/"
+            },
+            {
+                "question_number": 45,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38280-exam-az-104-topic-4-question-45-discussion/"
+            },
+            {
+                "question_number": 46,
+                "link": "https://www.actual4test.com/discussions/Microsoft/exam-az-104-topic-1-question-46-discussion-p1045928.html"
+            },
+            {
+                "question_number": 47,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38278-exam-az-104-topic-4-question-47-discussion/"
+            },
+            {
+                "question_number": 48,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/63164-exam-az-104-topic-4-question-48-discussion/"
+            },
+            {
+                "question_number": 49,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38248-exam-az-104-topic-4-question-49-discussion/"
+            },
+            {
+                "question_number": 50,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38276-exam-az-104-topic-4-question-50-discussion/"
+            },
+            {
+                "question_number": 51,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51766-exam-az-104-topic-5-question-51-discussion/"
+            },
+            {
+                "question_number": 52,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/73882-exam-az-104-topic-2-question-52-discussion/"
+            },
+            {
+                "question_number": 53,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93943-exam-az-104-topic-3-question-53-discussion/"
+            },
+            {
+                "question_number": 54,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51233-exam-az-104-topic-4-question-54-discussion/"
+            },
+            {
+                "question_number": 55,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51379-exam-az-104-topic-4-question-55-discussion/"
+            },
+            {
+                "question_number": 56,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51238-exam-az-104-topic-5-question-56-discussion/"
+            },
+            {
+                "question_number": 57,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51684-exam-az-104-topic-5-question-57-discussion/"
+            },
+            {
+                "question_number": 58,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39403-exam-az-104-topic-2-question-58-discussion/"
+            },
+            {
+                "question_number": 59,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/75849-exam-az-104-topic-2-question-59-discussion/"
+            },
+            {
+                "question_number": 60,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/125036-exam-az-104-topic-6-question-60-discussion/"
+            },
+            {
+                "question_number": 61,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/95611-exam-az-104-topic-3-question-61-discussion/"
+            },
+            {
+                "question_number": 62,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/95612-exam-az-104-topic-3-question-62-discussion/"
+            },
+            {
+                "question_number": 63,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93849-exam-az-104-topic-2-question-63-discussion/"
+            },
+            {
+                "question_number": 64,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/62936-exam-az-104-topic-4-question-64-discussion/"
+            },
+            {
+                "question_number": 65,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/67544-exam-az-104-topic-4-question-65-discussion/"
+            },
+            {
+                "question_number": 66,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93813-exam-az-104-topic-2-question-66-discussion/"
+            },
+            {
+                "question_number": 67,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51363-exam-az-104-topic-5-question-67-discussion/"
+            },
+            {
+                "question_number": 68,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51535-exam-az-104-topic-5-question-68-discussion/"
+            },
+            {
+                "question_number": 69,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/102394-exam-az-104-topic-3-question-69-discussion/"
+            },
+            {
+                "question_number": 70,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93922-exam-az-104-topic-2-question-70-discussion/"
+            },
+            {
+                "question_number": 71,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38267-exam-az-104-topic-4-question-71-discussion/"
+            },
+            {
+                "question_number": 72,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/95609-exam-az-104-topic-2-question-72-discussion/"
+            },
+            {
+                "question_number": 73,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56866-exam-az-104-topic-4-question-73-discussion/"
+            },
+            {
+                "question_number": 74,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78347-exam-az-104-topic-4-question-74-discussion/"
+            },
+            {
+                "question_number": 75,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/98388-exam-az-104-topic-2-question-75-discussion/"
+            },
+            {
+                "question_number": 76,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/102355-exam-az-104-topic-2-question-76-discussion/"
+            },
+            {
+                "question_number": 77,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/102358-exam-az-104-topic-2-question-77-discussion/"
+            },
+            {
+                "question_number": 78,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/102272-exam-az-104-topic-2-question-78-discussion/"
+            },
+            {
+                "question_number": 79,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78349-exam-az-104-topic-4-question-79-discussion/"
+            },
+            {
+                "question_number": 80,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78350-exam-az-104-topic-4-question-80-discussion/"
+            },
+            {
+                "question_number": 81,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/122369-exam-az-104-topic-3-question-81-discussion/"
+            },
+            {
+                "question_number": 82,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/122150-exam-az-104-topic-3-question-82-discussion/"
+            },
+            {
+                "question_number": 83,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113182-exam-az-104-topic-2-question-83-discussion/"
+            },
+            {
+                "question_number": 84,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93890-exam-az-104-topic-4-question-84-discussion/"
+            },
+            {
+                "question_number": 85,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93995-exam-az-104-topic-4-question-85-discussion/"
+            },
+            {
+                "question_number": 86,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93975-exam-az-104-topic-4-question-86-discussion/"
+            },
+            {
+                "question_number": 87,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93907-exam-az-104-topic-4-question-87-discussion/"
+            },
+            {
+                "question_number": 88,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/125160-exam-az-104-topic-3-question-88-discussion/"
+            },
+            {
+                "question_number": 89,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/125088-exam-az-104-topic-3-question-89-discussion/"
+            },
+            {
+                "question_number": 90,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/129670-exam-az-104-topic-3-question-90-discussion/"
+            },
+            {
+                "question_number": 91,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146311-exam-az-104-topic-3-question-91-discussion/"
+            },
+            {
+                "question_number": 92,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119595-exam-az-104-topic-2-question-92-discussion/"
+            },
+            {
+                "question_number": 93,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119599-exam-az-104-topic-2-question-93-discussion/"
+            },
+            {
+                "question_number": 94,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119703-exam-az-104-topic-4-question-94-discussion/"
+            },
+            {
+                "question_number": 95,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78505-exam-az-104-topic-5-question-95-discussion/"
+            },
+            {
+                "question_number": 96,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119629-exam-az-104-topic-4-question-96-discussion/"
+            },
+            {
+                "question_number": 97,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119630-exam-az-104-topic-4-question-97-discussion/"
+            },
+            {
+                "question_number": 98,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119631-exam-az-104-topic-4-question-98-discussion/"
+            },
+
+            {
+                "question_number": 99,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/121869-exam-az-104-topic-4-question-99-discussion/"
+            },
+            {
+                "question_number": 100,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/125368-exam-az-104-topic-4-question-100-discussion/"
+            },
+            {
+                "question_number": 101,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/79051-exam-az-104-topic-5-question-101-discussion/"
+            },
+            {
+                "question_number": 102,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/125320-exam-az-104-topic-4-question-102-discussion/"
+            },
+            {
+                "question_number": 103,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/94054-exam-az-104-topic-5-question-103-discussion/"
+            },
+            {
+                "question_number": 104,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/129729-exam-az-104-topic-4-question-104-discussion/"
+            },
+            {
+                "question_number": 105,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146300-exam-az-104-topic-2-question-105-discussion/"
+            },
+            {
+                "question_number": 106,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/130127-exam-az-104-topic-4-question-106-discussion/"
+            },
+            {
+                "question_number": 107,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146396-exam-az-104-topic-4-question-107-discussion/"
+            },
+            {
+                "question_number": 108,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/94077-exam-az-104-topic-5-question-108-discussion/"
+            },
+            {
+                "question_number": 109,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146247-exam-az-104-topic-2-question-109-discussion/"
+            },
+            {
+                "question_number": 110,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/94014-exam-az-104-topic-5-question-110-discussion/"
+            },
+            {
+                "question_number": 111,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/94424-exam-az-104-topic-5-question-111-discussion/"
+            },
+            {
+                "question_number": 112,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146241-exam-az-104-topic-4-question-112-discussion/"
+            },
+            {
+                "question_number": 113,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146337-exam-az-104-topic-4-question-113-discussion/"
+            },
+            {
+                "question_number": 114,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93855-exam-az-104-topic-5-question-114-discussion/"
+            },
+            {
+                "question_number": 115,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/95679-exam-az-104-topic-5-question-115-discussion/"
+            },
+            {
+                "question_number": 116,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146478-exam-az-104-topic-4-question-116-discussion/"
+            },
+            {
+                "question_number": 117,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146332-exam-az-104-topic-4-question-117-discussion/"
+            },
+            {
+                "question_number": 118,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/98341-exam-az-104-topic-5-question-118-discussion/"
+            },
+            {
+                "question_number": 119,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/147399-exam-az-104-topic-4-question-119-discussion/"
+            },
+            {
+                "question_number": 120,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/147400-exam-az-104-topic-4-question-120-discussion/"
+            },
+            {
+                "question_number": 121,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/102357-exam-az-104-topic-5-question-121-discussion/"
+            },
+            {
+                "question_number": 122,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/108484-exam-az-104-topic-5-question-122-discussion/"
+            },
+            {
+                "question_number": 123,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/108633-exam-az-104-topic-5-question-123-discussion/"
+            },
+            {
+                "question_number": 124,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113292-exam-az-104-topic-5-question-126-discussion/"
+            },
+            {
+                "question_number": 125,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/108603-exam-az-104-topic-5-question-125-discussion/"
+            },
+            {
+                "question_number": 126,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113292-exam-az-104-topic-5-question-126-discussion/"
+            },
+            {
+                "question_number": 127,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113682-exam-az-104-topic-5-question-127-discussion/"
+            },
+            {
+                "question_number": 128,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113375-exam-az-104-topic-5-question-128-discussion/"
+            },
+            {
+                "question_number": 129,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146249-exam-az-104-topic-5-question-129-discussion/"
+            },
+            {
+                "question_number": 130,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146210-exam-az-104-topic-5-question-130-discussion/"
+            },
+            {
+                "question_number": 131,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113065-exam-az-104-topic-5-question-131-discussion/"
+            },
+            {
+                "question_number": 132,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113100-exam-az-104-topic-5-question-132-discussion/"
+            },
+            {
+                "question_number": 133,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146212-exam-az-104-topic-5-question-133-discussion/"
+            },
+            {
+                "question_number": 134,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113103-exam-az-104-topic-5-question-134-discussion/"
+            },
+            {
+                "question_number": 135,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119667-exam-az-104-topic-5-question-135-discussion/"
+            },
+            {
+                "question_number": 136,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119667-exam-az-104-topic-5-question-135-discussion/"
+            },
+            {
+                "question_number": 137,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119668-exam-az-104-topic-5-question-137-discussion/"
+            },
+            {
+                "question_number": 138,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119956-exam-az-104-topic-5-question-138-discussion/"
+            },
+            {
+                "question_number": 139,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146215-exam-az-104-topic-5-question-139-discussion/"
+            },
+            {
+                "question_number": 140,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119784-exam-az-104-topic-5-question-140-discussion/"
+            },
+            {
+                "question_number": 141,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119601-exam-az-104-topic-5-question-141-discussion/"
+            },
+            {
+                "question_number": 142,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119715-exam-az-104-topic-5-question-142-discussion/"
+            },
+            {
+                "question_number": 143,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/120891-exam-az-104-topic-5-question-143-discussion/"
+            },
+            {
+                "question_number": 144,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119716-exam-az-104-topic-5-question-144-discussion/"
+            },
+            {
+                "question_number": 145,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119607-exam-az-104-topic-5-question-145-discussion/"
+            },
+            {
+                "question_number": 146,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/125321-exam-az-104-topic-5-question-146-discussion/"
+            },
+            {
+                "question_number": 147,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/125124-exam-az-104-topic-5-question-147-discussion/"
+            },
+            {
+                "question_number": 148,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/129668-exam-az-104-topic-5-question-148-discussion/"
+            },
+            {
+                "question_number": 149,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/129669-exam-az-104-topic-5-question-149-discussion/"
+            },
+            {
+                "question_number": 150,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/129750-exam-az-104-topic-5-question-150-discussion/"
+            },
+            {
+                "question_number": 151,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/129750-exam-az-104-topic-5-question-150-discussion/"
+            },
+            {
+                "question_number": 152,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51378-exam-az-104-topic-5-question-52-discussion/"
+            },
+            {
+                "question_number": 153,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146209-exam-az-104-topic-5-question-104-discussion/"
+            },
+            {
+                "question_number": 154,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/11135-exam-az-900-topic-1-question-154-discussion/"
+            },
+            {
+                "question_number": 155,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/4948-exam-az-900-topic-1-question-155-discussion/"
+            },
+            {
+                "question_number": 156,
+                "link": "https://www.examtopics.com/discussions/checkpoint/view/127598-exam-156-560-topic-1-question-104-discussion/"
+            },
+            {
+                "question_number": 157,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38293-exam-az-104-topic-5-question-13-discussion/"
+            },
+            {
+                "question_number": 158,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38893-exam-az-104-topic-6-question-6-discussion/"
+            },
+            {
+                "question_number": 159,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/10023-exam-az-900-topic-1-question-159-discussion/"
+            },
+            {
+                "question_number": 160,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/129750-exam-az-104-topic-5-question-150-discussion/"
+            },
+            {
+                "question_number": 161,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/12156-exam-az-900-topic-1-question-161-discussion/"
+            },
+            {
+                "question_number": 162,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/84024-exam-az-900-topic-1-question-162-discussion/"
+            },
+            {
+                "question_number": 163,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/84471-exam-az-900-topic-1-question-163-discussion/"
+            },
+            {
+                "question_number": 164,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/3203-exam-az-900-topic-1-question-164-discussion/"
+            },
+            {
+                "question_number": 165,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/2971-exam-az-900-topic-1-question-165-discussion/"
+            },
+            {
+                "question_number": 166,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51535-exam-az-104-topic-5-question-68-discussion/"
+            },
+            {
+                "question_number": 167,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/12298-exam-az-900-topic-1-question-167-discussion/"
+            },
+            {
+                "question_number": 168,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/44024-exam-az-900-topic-1-question-168-discussion/"
+            },
+            {
+                "question_number": 169,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/44734-exam-az-900-topic-1-question-169-discussion/"
+            },
+            {
+                "question_number": 170,
+                "link": "No result found"
+            },
+            {
+                "question_number": 171,
+                "link": "No result found"
+            },
+            {
+                "question_number": 172,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51333-exam-az-104-topic-3-question-29-discussion/"
+            },
+            {
+                "question_number": 173,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/9991-exam-az-900-topic-1-question-173-discussion/"
+            },
+            {
+                "question_number": 174,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38114-exam-az-104-topic-2-question-8-discussion/"
+            },
+            {
+                "question_number": 175,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/8995-exam-az-900-topic-1-question-175-discussion/"
+            },
+            {
+                "question_number": 176,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39142-exam-az-104-topic-3-question-15-discussion/"
+            },
+            {
+                "question_number": 177,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51529-exam-az-104-topic-6-question-17-discussion/"
+            },
+            {
+                "question_number": 178,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38882-exam-az-104-topic-3-question-2-discussion/"
+            },
+            {
+                "question_number": 179,
+                "link": "https://www.examtopics.com/discussions/microsoft/41/"
+            },
+            {
+                "question_number": 180,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/18/"
+            },
+            {
+                "question_number": 181,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/19/"
+            },
+            {
+                "question_number": 182,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 183,
+                "link": "https://www.examtopics.com/discussions/microsoft/20/"
+            },
+            {
+                "question_number": 184,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/9162-exam-az-900-topic-1-question-184-discussion/"
+            },
+            {
+                "question_number": 185,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/44038-exam-az-900-topic-1-question-77-discussion/"
+            },
+            {
+                "question_number": 186,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/44185-exam-az-900-topic-1-question-186-discussion/"
+            },
+            {
+                "question_number": 187,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56448-exam-az-104-topic-5-question-4-discussion/"
+            },
+            {
+                "question_number": 188,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38882-exam-az-104-topic-3-question-2-discussion/"
+            },
+            {
+                "question_number": 189,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/45073-exam-az-900-topic-1-question-123-discussion/"
+            },
+            {
+                "question_number": 190,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/45074-exam-az-900-topic-1-question-190-discussion/"
+            },
+            {
+                "question_number": 191,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/44117-exam-az-900-topic-1-question-191-discussion/"
+            },
+            {
+                "question_number": 192,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38432-exam-az-104-topic-5-question-20-discussion/"
+            },
+            {
+                "question_number": 193,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51465-exam-az-104-topic-5-question-48-discussion/"
+            },
+            {
+                "question_number": 194,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39196-exam-az-104-topic-6-question-14-discussion/"
+            },
+            {
+                "question_number": 195,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119724-exam-az-104-topic-2-question-87-discussion/"
+            },
+            {
+                "question_number": 196,
+                "link": "https://www.examtopics.com/discussions/microsoft/117/"
+            },
+            {
+                "question_number": 197,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39002-exam-az-104-topic-5-question-88-discussion/"
+            },
+            {
+                "question_number": 198,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/28207-exam-az-104-topic-4-question-31-discussion/"
+            },
+            {
+                "question_number": 199,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/80968-exam-az-900-topic-1-question-199-discussion/"
+            },
+            {
+                "question_number": 200,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113375-exam-az-104-topic-5-question-128-discussion/"
+            },
+
+            {
+                "question_number": 200,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113375-exam-az-104-topic-5-question-128-discussion/"
+            },
+            {
+                "question_number": 201,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/21/"
+            },
+            {
+                "question_number": 202,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38169-exam-az-104-topic-5-question-41-discussion/"
+            },
+            {
+                "question_number": 203,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/8413-exam-az-900-topic-1-question-203-discussion/"
+            },
+            {
+                "question_number": 204,
+                "link": "https://www.examtopics.com/exams/microsoft/az-204/"
+            },
+            {
+                "question_number": 205,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/11360-exam-az-900-topic-1-question-205-discussion/"
+            },
+            {
+                "question_number": 206,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57018-exam-az-104-topic-16-question-2-discussion/"
+            },
+            {
+                "question_number": 207,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/45180-exam-az-900-topic-1-question-207-discussion/"
+            },
+            {
+                "question_number": 208,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/44320-exam-az-900-topic-1-question-208-discussion/"
+            },
+            {
+                "question_number": 209,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/80696-exam-az-900-topic-1-question-209-discussion/"
+            },
+            {
+                "question_number": 210,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/21/"
+            },
+            {
+                "question_number": 211,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/22/"
+            },
+            {
+                "question_number": 212,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39037-exam-az-104-topic-5-question-25-discussion/"
+            },
+            {
+                "question_number": 213,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38302-exam-az-104-topic-3-question-13-discussion/"
+            },
+            {
+                "question_number": 214,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/4/"
+            },
+            {
+                "question_number": 215,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 216,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/"
+            },
+            {
+                "question_number": 217,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/"
+            },
+            {
+                "question_number": 218,
+                "link": "https://www.examtopics.com/discussions/microsoft/434/"
+            },
+            {
+                "question_number": 219,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/67686-exam-az-104-topic-6-question-8-discussion/"
+            },
+            {
+                "question_number": 220,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/22/"
+            },
+            {
+                "question_number": 221,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/23/"
+            },
+            {
+                "question_number": 222,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 223,
+                "link": "https://www.examtopics.com/discussions/microsoft/434/"
+            },
+            {
+                "question_number": 224,
+                "link": "https://www.examtopics.com/discussions/microsoft/324/"
+            },
+            {
+                "question_number": 225,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/41443-exam-az-104-topic-4-question-52-discussion/"
+            },
+            {
+                "question_number": 226,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 227,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38369-exam-az-104-topic-4-question-36-discussion/"
+            },
+            {
+                "question_number": 228,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/41639-exam-az-104-topic-14-question-2-discussion/"
+            },
+            {
+                "question_number": 229,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 230,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/23/"
+            },
+            {
+                "question_number": 231,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38272-exam-az-104-topic-4-question-57-discussion/"
+            },
+            {
+                "question_number": 232,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78393-exam-az-104-topic-2-question-54-discussion/"
+            },
+            {
+                "question_number": 233,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 234,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/84453-exam-az-900-topic-1-question-234-discussion/"
+            },
+            {
+                "question_number": 235,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 236,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/85455-exam-az-900-topic-1-question-236-discussion/"
+            },
+            {
+                "question_number": 237,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38805-exam-az-104-topic-3-question-14-discussion/"
+            },
+            {
+                "question_number": 238,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38293-exam-az-104-topic-5-question-13-discussion/"
+            },
+            {
+                "question_number": 239,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/33474-exam-az-104-topic-4-question-9-discussion/"
+            },
+            {
+                "question_number": 240,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/26982-exam-az-104-topic-3-question-1-discussion/"
+            },
+            {
+                "question_number": 241,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/25"
+            },
+            {
+                "question_number": 242,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51333-exam-az-104-topic-3-question-29-discussion/"
+            },
+            {
+                "question_number": 243,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38296-exam-az-104-topic-3-question-5-discussion/"
+            },
+            {
+                "question_number": 244,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39045-exam-az-104-topic-6-question-4-discussion/"
+            },
+            {
+                "question_number": 245,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/33741-exam-az-104-topic-4-question-14-discussion/"
+            },
+            {
+                "question_number": 246,
+                "link": "https://www.examtopics.com/discussions/microsoft/114/"
+            },
+            {
+                "question_number": 247,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 248,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38264-exam-az-104-topic-4-question-5-discussion/"
+            },
+            {
+                "question_number": 249,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/11141-exam-az-900-topic-1-question-249-discussion/"
+            },
+            {
+                "question_number": 250,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57018-exam-az-104-topic-16-question-2-discussion/"
+            },
+            {
+                "question_number": 251,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/26/"
+            },
+            {
+                "question_number": 252,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/46597-exam-az-900-topic-1-question-252-discussion/"
+            },
+            {
+                "question_number": 253,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/8437-exam-az-900-topic-1-question-253-discussion/"
+            },
+            {
+                "question_number": 254,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38432-exam-az-104-topic-5-question-20-discussion/"
+            },
+            {
+                "question_number": 255,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/10423-exam-az-900-topic-1-question-255-discussion/"
+            },
+            {
+                "question_number": 256,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/2/"
+            },
+            {
+                "question_number": 257,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/8/"
+            },
+            {
+                "question_number": 258,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/52250-exam-az-900-topic-1-question-258-discussion/"
+            },
+            {
+                "question_number": 259,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/44015-exam-az-900-topic-1-question-259-discussion/"
+            },
+            {
+                "question_number": 260,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/7310-exam-az-900-topic-1-question-260-discussion/"
+            },
+            {
+                "question_number": 261,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/27/"
+            },
+            {
+                "question_number": 262,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 263,
+                "link": "https://www.examtopics.com/discussions/microsoft/41/"
+            },
+            {
+                "question_number": 264,
+                "link": "https://www.examtopics.com/discussions/microsoft/264/"
+            },
+            {
+                "question_number": 265,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51322-exam-az-900-topic-1-question-265-discussion/"
+            },
+            {
+                "question_number": 266,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/33741-exam-az-104-topic-4-question-14-discussion/"
+            },
+            {
+                "question_number": 267,
+                "link": "https://www.examtopics.com/discussions/microsoft/41/"
+            },
+            {
+                "question_number": 268,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/75857-exam-az-104-topic-2-question-7-discussion/"
+            },
+            {
+                "question_number": 269,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78406-exam-az-104-topic-2-question-57-discussion/"
+            },
+            {
+                "question_number": 270,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38369-exam-az-104-topic-4-question-36-discussion/"
+            },
+            {
+                "question_number": 271,
+                "link": "https://www.examtopics.com/exams/microsft/az-104/view/28/"
+            },
+            {
+                "question_number": 272,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/45186-exam-az-900-topic-1-question-272-discussion/"
+            },
+            {
+                "question_number": 273,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 274,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38305-exam-az-104-topic-4-question-8-discussion/"
+            },
+            {
+                "question_number": 275,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/44527-exam-az-900-topic-1-question-275-discussion/"
+            },
+            {
+                "question_number": 276,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/7/"
+            },
+            {
+                "question_number": 277,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38432-exam-az-104-topic-5-question-20-discussion/"
+            },
+            {
+                "question_number": 278,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/61336-exam-az-900-topic-1-question-278-discussion/"
+            },
+            {
+                "question_number": 279,
+                "link": "https://www.examtopics.com/discussions/microsoft/392/"
+            },
+            {
+                "question_number": 280,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/28/"
+            },
+            {
+                "question_number": 281,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/29/"
+            },
+            {
+                "question_number": 282,
+                "link": "https://www.examtopics.com/discussions/microsoft/163/"
+            },
+            {
+                "question_number": 283,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/63119-exam-az-900-topic-1-question-283-discussion/"
+            },
+            {
+                "question_number": 284,
+                "link": "https://www.examtopics.com/discussions/microsoft/284/"
+            },
+            {
+                "question_number": 285,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/68711-exam-az-900-topic-1-question-285-discussion/"
+            },
+            {
+                "question_number": 286,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39132-exam-az-104-topic-3-question-11-discussion/"
+            },
+            {
+                "question_number": 287,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 288,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38698-exam-az-104-topic-4-question-24-discussion/"
+            },
+            {
+                "question_number": 289,
+                "link": "https://www.examtopics.com/discussions/microsoft/117/"
+            },
+            {
+                "question_number": 290,
+                "link": "https://www.examtopics.com/exams/microsft/az-104/view/29/"
+            },
+            {
+                "question_number": 291,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/30/"
+            },
+            {
+                "question_number": 292,
+                "link": "https://www.examtopics.com/discussions/comptia/view/55270-exam-220-1001-topic-1-question-292-discussion/"
+            },
+            {
+                "question_number": 293,
+                "link": "https://www.examtopics.com/discussions/microsoft/581/"
+            },
+            {
+                "question_number": 294,
+                "link": "No result found"
+            },
+            {
+                "question_number": 295,
+                "link": "https://www.examtopics.com/discussions/microsoft/117/"
+            },
+            {
+                "question_number": 296,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57004-exam-az-104-topic-1-question-32-discussion/"
+            },
+            {
+                "question_number": 297,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38362-exam-az-104-topic-3-question-21-discussion/"
+            },
+            {
+                "question_number": 298,
+                "link": "https://www.examtopics.com/discussions/microsoft/71/"
+            },
+            {
+                "question_number": 299,
+                "link": "https://www.examtopics.com/discussions/microsoft/181/"
+            },
+            {
+                "question_number": 300,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57109-exam-az-104-topic-1-question-30-discussion/"
+            },
+            {
+                "question_number": 301,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/31/"
+            },
+            {
+                "question_number": 302,
+                "link": "https://www.examtopics.com/discussions/microsoft/970/"
+            },
+            {
+                "question_number": 303,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/41252-exam-az-303-topic-1-question-15-discussion/"
+            },
+            {
+                "question_number": 304,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/30782-exam-az-304-topic-4-question-10-discussion/"
+            },
+            {
+                "question_number": 305,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/115257-exam-az-305-topic-4-question-104-discussion/"
+            },
+            {
+                "question_number": 306,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/62880-exam-az-104-topic-1-question-23-discussion/"
+            },
+            {
+                "question_number": 307,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38889-exam-az-104-topic-5-question-36-discussion/"
+            },
+            {
+                "question_number": 308,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57486-exam-az-104-topic-1-question-24-discussion/"
+            },
+            {
+                "question_number": 309,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/17/"
+            },
+            {
+                "question_number": 310,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/31/"
+            },
+            {
+                "question_number": 311,
+                "link": "No result found"
+            },
+            {
+                "question_number": 312,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/75853-exam-az-104-topic-2-question-3-discussion/"
+            },
+            {
+                "question_number": 313,
+                "link": "https://www.examtopics.com/discussions/microsoft/491/"
+            },
+            {
+                "question_number": 314,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39142-exam-az-104-topic-3-question-15-discussion/"
+            },
+            {
+                "question_number": 315,
+                "link": "https://www.examtopics.com/discussions/microsoft/104/"
+            },
+            {
+                "question_number": 316,
+                "link": "https://www.examtopics.com/discussions/microsoft/375/"
+            },
+            {
+                "question_number": 317,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39032-exam-az-104-topic-5-question-25-discussion/"
+            },
+            {
+                "question_number": 318,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38353-exam-az-104-topic-2-question-8-discussion/"
+            },
+            {
+                "question_number": 319,
+                "link": "https://www.examtopics.com/discussions/microsoft/76/"
+            },
+            {
+                "question_number": 320,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/32/"
+            },
+            {
+                "question_number": 321,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51306-exam-az-104-topic-2-question-30-discussion/"
+            },
+            {
+                "question_number": 322,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/17697-exam-az-900-topic-1-question-322-discussion/"
+            },
+            {
+                "question_number": 323,
+                "link": "https://www.examtopics.com/discussions/microsoft/41/"
+            },
+            {
+                "question_number": 324,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51691-exam-az-104-topic-5-question-66-discussion/"
+            },
+            {
+                "question_number": 325,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/67554-exam-az-104-topic-4-question-27-discussion/"
+            },
+            {
+                "question_number": 326,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57004-exam-az-104-topic-1-question-32-discussion/"
+            },
+            {
+                "question_number": 327,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38454-exam-az-104-topic-5-question-96-discussion/"
+            },
+            {
+                "question_number": 328,
+                "link": "https://www.examtopics.com/discussions/microsoft/252/"
+            },
+            {
+                "question_number": 329,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/54072-exam-az-900-topic-1-question-329-discussion/"
+            },
+            {
+                "question_number": 330,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/33/"
+            },
+            {
+                "question_number": 331,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/34/"
+            },
+            {
+                "question_number": 332,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 333,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119829-exam-az-104-topic-3-question-75-discussion/"
+            },
+            {
+                "question_number": 334,
+                "link": "https://www.examtopics.com/exams/microsoft/70-334/view/26/"
+            },
+            {
+                "question_number": 335,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 336,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119710-exam-az-104-topic-4-question-95-discussion/"
+            },
+            {
+                "question_number": 337,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/63383-exam-az-900-topic-1-question-337-discussion/"
+            },
+            {
+                "question_number": 338,
+                "link": "https://www.examtopics.com/discussions/microsoft/226/"
+            },
+            {
+                "question_number": 339,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/33447-exam-az-900-topic-1-question-339-discussion/"
+            },
+            {
+                "question_number": 340,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38424-exam-az-104-topic-2-question-32-discussion/"
+            },
+            {
+                "question_number": 341,
+                "link": "https://www.examtopics.com/exams/micrsoft/az-104/view/35/"
+            },
+            {
+                "question_number": 342,
+                "link": "https://www.examtopics.com/discussions/microsoft/188/"
+            },
+            {
+                "question_number": 343,
+                "link": "https://www.examtopics.com/discussions/microsoft/393/"
+            },
+            {
+                "question_number": 344,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/95816-exam-az-104-topic-6-question-43-discussion/"
+            },
+            {
+                "question_number": 345,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/82496-exam-az-900-topic-1-question-345-discussion/"
+            },
+            {
+                "question_number": 346,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 347,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/80139-exam-az-900-topic-1-question-347-discussion/"
+            },
+            {
+                "question_number": 348,
+                "link": "https://www.examtopics.com/discussions/microsoft/569/"
+            },
+            {
+                "question_number": 349,
+                "link": "https://www.examtopics.com/discussions/microsoft/189/"
+            },
+            {
+                "question_number": 350,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/35/"
+            },
+            {
+                "question_number": 351,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/36/"
+            },
+            {
+                "question_number": 352,
+                "link": "https://www.examtopics.com/discussions/microsoft/208/"
+            },
+            {
+                "question_number": 353,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/67554-exam-az-104-topic-4-question-27-discussion/"
+            },
+            {
+                "question_number": 354,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38242-exam-az-104-topic-2-question-35-discussion/"
+            },
+            {
+                "question_number": 355,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38700-exam-az-104-topic-4-question-23-discussion/"
+            },
+            {
+                "question_number": 356,
+                "link": "https://www.examtopics.com/discussions/microsoft/8/"
+            },
+            {
+                "question_number": 357,
+                "link": "https://www.examtopics.com/discussions/microsoft/581/"
+            },
+            {
+                "question_number": 358,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38367-exam-az-104-topic-4-question-33-discussion/"
+            },
+            {
+                "question_number": 359,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93891-exam-az-104-topic-3-question-57-discussion/"
+            },
+            {
+                "question_number": 360,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/36/"
+            },
+            {
+                "question_number": 361,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/37/"
+            },
+            {
+                "question_number": 362,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 363,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/54656-exam-az-900-topic-1-question-363-discussion/"
+            },
+            {
+                "question_number": 364,
+                "link": "https://www.examtopics.com/discussions/microsoft/115/"
+            },
+            {
+                "question_number": 365,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/75853-exam-az-104-topic-2-question-3-discussion/"
+            },
+            {
+                "question_number": 366,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/75857-exam-az-104-topic-2-question-7-discussion/"
+            },
+            {
+                "question_number": 367,
+                "link": "https://www.examtopics.com/discussions/microsoft/970/"
+            },
+            {
+                "question_number": 368,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 369,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/67433-exam-az-104-topic-3-question-16-discussion/"
+            },
+            {
+                "question_number": 370,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/37/"
+            },
+            {
+                "question_number": 371,
+                "link": "https://www.examtopics.com/exams/micrsoft/az-104/view/38/"
+            },
+            {
+                "question_number": 372,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 373,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 374,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/"
+            },
+            {
+                "question_number": 375,
+                "link": "https://www.examtopics.com/discussions/microsoft/375/"
+            },
+            {
+                "question_number": 376,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 377,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38433-exam-az-104-topic-5-question-21-discussion/"
+            },
+            {
+                "question_number": 378,
+                "link": "https://www.examtopics.com/discussions/microsoft/89/"
+            },
+            {
+                "question_number": 379,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 380,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/38/"
+            },
+            {
+                "question_number": 381,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/39/"
+            },
+            {
+                "question_number": 382,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51270-exam-az-104-topic-2-question-37-discussion/"
+            },
+            {
+                "question_number": 383,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 384,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93891-exam-az-104-topic-3-question-57-discussion/"
+            },
+            {
+                "question_number": 385,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38200-exam-az-104-topic-5-question-30-discussion/"
+            },
+            {
+                "question_number": 386,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93738-exam-az-900-topic-1-question-386-discussion/"
+            },
+            {
+                "question_number": 387,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 388,
+                "link": "https://www.examtopics.com/discussions/microsoft/104/"
+            },
+            {
+                "question_number": 389,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93953-exam-az-104-topic-5-question-106-discussion/"
+            },
+            {
+                "question_number": 390,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/39/"
+            },
+            {
+                "question_number": 391,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93152-exam-az-900-topic-1-question-391-discussion/"
+            },
+            {
+                "question_number": 392,
+                "link": "https://www.examtopics.com/discussions/microsoft/392/"
+            },
+            {
+                "question_number": 393,
+                "link": "https://www.examtopics.com/discussions/microsoft/393/"
+            },
+            {
+                "question_number": 394,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51272-exam-az-104-topic-3-question-32-discussion/"
+            },
+            {
+                "question_number": 395,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93922-exam-az-104-topic-2-question-70-discussion/"
+            },
+            {
+                "question_number": 396,
+                "link": "https://www.examtopics.com/discussions/microsoft/217/"
+            },
+            {
+                "question_number": 397,
+                "link": "https://www.examtopics.com/discussions/microsoft/189/"
+            },
+            {
+                "question_number": 398,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 399,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 400,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/94663-exam-az-900-topic-1-question-400-discussion/"
+            },
+
+            {
+                "question_number": 401,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/41/"
+            },
+            {
+                "question_number": 402,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/129729-exam-az-104-topic-4-question-104-discussion/"
+            },
+            {
+                "question_number": 403,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93244-exam-az-900-topic-1-question-403-discussion/"
+            },
+            {
+                "question_number": 404,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93464-exam-az-900-topic-1-question-404-discussion/"
+            },
+            {
+                "question_number": 405,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38264-exam-az-104-topic-4-question-5-discussion/"
+            },
+            {
+                "question_number": 406,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/94324-exam-az-900-topic-1-question-406-discussion/"
+            },
+            {
+                "question_number": 407,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 408,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 409,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 410,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/41/"
+            },
+            {
+                "question_number": 411,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/42/"
+            },
+            {
+                "question_number": 412,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38169-exam-az-104-topic-5-question-41-discussion/"
+            },
+            {
+                "question_number": 413,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 414,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/110430-exam-az-900-topic-1-question-414-discussion/"
+            },
+            {
+                "question_number": 415,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/62875-exam-az-104-topic-1-question-20-discussion/"
+            },
+            {
+                "question_number": 416,
+                "link": "https://www.examtopics.com/discussions/microsoft/264/"
+            },
+            {
+                "question_number": 417,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51333-exam-az-104-topic-3-question-29-discussion/"
+            },
+            {
+                "question_number": 418,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/53940-exam-az-104-topic-3-question-36-discussion/"
+            },
+            {
+                "question_number": 419,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/112281-exam-az-900-topic-1-question-419-discussion/"
+            },
+            {
+                "question_number": 420,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/42/"
+            },
+            {
+                "question_number": 421,
+                "link": "https://www.examtopics.com/exams/microsft/az-104/view/43/"
+            },
+            {
+                "question_number": 422,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38893-exam-az-104-topic-6-question-6-discussion/"
+            },
+            {
+                "question_number": 423,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/111575-exam-az-900-topic-1-question-423-discussion/"
+            },
+            {
+                "question_number": 424,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38883-exam-az-104-topic-3-question-4-discussion/"
+            },
+            {
+                "question_number": 425,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/113380-exam-az-900-topic-1-question-425-discussion/"
+            },
+            {
+                "question_number": 426,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 427,
+                "link": "https://www.examtopics.com/discussions/microsoft/413/"
+            },
+            {
+                "question_number": 428,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38239-exam-az-104-topic-3-question-31-discussion/"
+            },
+            {
+                "question_number": 429,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38305-exam-az-104-topic-4-question-8-discussion/"
+            },
+            {
+                "question_number": 430,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/43/"
+            },
+            {
+                "question_number": 431,
+                "link": "https://www.examtopics.com/exams/microsft/az-104/view/44/"
+            },
+            {
+                "question_number": 432,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/112288-exam-az-900-topic-1-question-432-discussion/"
+            },
+            {
+                "question_number": 433,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146247-exam-az-104-topic-2-question-109-discussion/"
+            },
+            {
+                "question_number": 434,
+                "link": "https://www.examtopics.com/discussions/microsoft/434/"
+            },
+            {
+                "question_number": 435,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146247-exam-az-104-topic-2-question-109-discussion/"
+            },
+            {
+                "question_number": 436,
+                "link": "https://www.examtopics.com/discussions/microsoft/156/"
+            },
+            {
+                "question_number": 437,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 438,
+                "link": "https://www.examtopics.com/discussions/microsoft/438/"
+            },
+            {
+                "question_number": 439,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57081-exam-az-104-topic-1-question-9-discussion/"
+            },
+            {
+                "question_number": 440,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/44/"
+            },
+            {
+                "question_number": 441,
+                "link": "https://www.examtopics.com/exams/microsft/az-104/view/45/"
+            },
+            {
+                "question_number": 442,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51535-exam-az-104-topic-5-question-68-discussion/"
+            },
+            {
+                "question_number": 443,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/41639-exam-az-104-topic-14-question-2-discussion/"
+            },
+            {
+                "question_number": 444,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/73994-exam-az-104-topic-3-question-44-discussion/"
+            },
+            {
+                "question_number": 445,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/20/"
+            },
+            {
+                "question_number": 446,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 447,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119859-exam-az-900-topic-1-question-447-discussion/"
+            },
+            {
+                "question_number": 448,
+                "link": "https://www.examtopics.com/discussions/microsoft/261/"
+            },
+            {
+                "question_number": 449,
+                "link": "https://www.examtopics.com/discussions/microsoft/445/"
+            },
+            {
+                "question_number": 450,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38280-exam-az-104-topic-4-question-45-discussion/"
+            },
+            {
+                "question_number": 451,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38432-exam-az-104-topic-5-question-20-discussion/"
+            },
+            {
+                "question_number": 452,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38432-exam-az-104-topic-5-question-20-discussion/"
+            },
+            {
+                "question_number": 453,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/25359-exam-az-104-topic-3-question-45-discussion/"
+            },
+            {
+                "question_number": 454,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/148448-exam-az-900-topic-1-question-454-discussion/"
+            },
+            {
+                "question_number": 455,
+                "link": "https://www.examtopics.com/discussions/microsoft/337/"
+            },
+            {
+                "question_number": 456,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51316-exam-az-104-topic-5-question-46-discussion/"
+            },
+            {
+                "question_number": 457,
+                "link": "https://www.examtopics.com/discussions/apics/35/"
+            },
+            {
+                "question_number": 458,
+                "link": "https://www.examtopics.com/discussions/microsoft/375/"
+            },
+            {
+                "question_number": 459,
+                "link": "https://www.examtopics.com/discussions/microsoft/180/"
+            },
+            {
+                "question_number": 460,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/63206-exam-az-104-topic-2-question-46-discussion/"
+            },
+            {
+                "question_number": 461,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/47/"
+            },
+            {
+                "question_number": 462,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/136651-exam-az-900-topic-1-question-462-discussion/"
+            },
+            {
+                "question_number": 463,
+                "link": "https://www.examtopics.com/discussions/microsoft/18/"
+            },
+            {
+                "question_number": 464,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38302-exam-az-104-topic-3-question-13-discussion/"
+            },
+            {
+                "question_number": 465,
+                "link": "https://www.examtopics.com/discussions/microsoft/217/"
+            },
+            {
+                "question_number": 466,
+                "link": "https://www.examtopics.com/discussions/microsoft/18/"
+            },
+            {
+                "question_number": 467,
+                "link": "https://www.examtopics.com/discussions/microsoft/375/"
+            },
+            {
+                "question_number": 468,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38284-exam-az-104-topic-4-question-43-discussion/"
+            },
+            {
+                "question_number": 469,
+                "link": "https://www.examtopics.com/discussions/microsoft/150/"
+            },
+            {
+                "question_number": 470,
+                "link": "https://www.examtopics.com/exams/comptia/az-104/view/47/"
+            },
+            {
+                "question_number": 471,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38893-exam-az-104-topic-6-question-6-discussion/"
+            },
+            {
+                "question_number": 472,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78632-exam-az-104-topic-3-question-47-discussion/"
+            },
+            {
+                "question_number": 473,
+                "link": "https://www.examtopics.com/discussions/microsoft/569/"
+            },
+            {
+                "question_number": 474,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 475,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 476,
+                "link": "https://www.examtopics.com/discussions/microsoft/548/"
+            },
+            {
+                "question_number": 477,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38278-exam-az-104-topic-4-question-47-discussion/"
+            },
+            {
+                "question_number": 478,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/63014-exam-az-104-topic-5-question-83-discussion/"
+            },
+            {
+                "question_number": 479,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 480,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/48/"
+            },
+            {
+                "question_number": 481,
+                "link": "https://www.examtopics.com/exams/micrsoft/az-104/view/49/"
+            },
+            {
+                "question_number": 482,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 483,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/"
+            },
+            {
+                "question_number": 484,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 485,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38700-exam-az-104-topic-4-question-23-discussion/"
+            },
+            {
+                "question_number": 486,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 487,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 488,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/78882-exam-az-104-topic-3-question-48-discussion/"
+            },
+            {
+                "question_number": 489,
+                "link": "https://www.examtopics.com/discussions/microsoft/581/"
+            },
+            {
+                "question_number": 490,
+                "link": "https://www.examtopics.com/exams/microsft/az-104/view/49/"
+            },
+            {
+                "question_number": 491,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/50/"
+            },
+            {
+                "question_number": 492,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 493,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 494,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 495,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 496,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119629-exam-az-104-topic-4-question-96-discussion/"
+            },
+            {
+                "question_number": 497,
+                "link": "https://www.examtopics.com/discussions/microsoft/497/"
+            },
+            {
+                "question_number": 498,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38883-exam-az-104-topic-3-question-4-discussion/"
+            },
+            {
+                "question_number": 499,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/119584-exam-az-104-topic-2-question-90-discussion/"
+            },
+            {
+                "question_number": 500,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/112414-exam-az-500-topic-2-question-104-discussion/"
+            },
+            {
+                "question_number": 501,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51523-exam-az-104-topic-5-question-54-discussion/"
+            },
+            {
+                "question_number": 502,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/"
+            },
+            {
+                "question_number": 503,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 504,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/57004-exam-az-104-topic-1-question-32-discussion/"
+            },
+            {
+                "question_number": 505,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51233-exam-az-104-topic-4-question-54-discussion/"
+            },
+            {
+                "question_number": 506,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 507,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 508,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/63005-exam-az-104-topic-5-question-80-discussion/"
+            },
+            {
+                "question_number": 509,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 510,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/51/"
+            },
+            {
+                "question_number": 511,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/52/"
+            },
+            {
+                "question_number": 512,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56829-exam-az-104-topic-1-question-4-discussion/"
+            },
+            {
+                "question_number": 513,
+                "link": "No result found"
+            },
+            {
+                "question_number": 514,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51233-exam-az-104-topic-4-question-54-discussion/"
+            },
+            {
+                "question_number": 515,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93852-exam-az-104-topic-6-question-39-discussion/"
+            },
+            {
+                "question_number": 516,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 517,
+                "link": "https://www.examtopics.com/discussions/microsoft/220/"
+            },
+            {
+                "question_number": 518,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/73975-exam-az-104-topic-6-question-12-discussion/"
+            },
+            {
+                "question_number": 519,
+                "link": "https://www.examtopics.com/discussions/microsoft/212/"
+            },
+            {
+                "question_number": 520,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/52/"
+            },
+            {
+                "question_number": 521,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93891-exam-az-104-topic-3-question-57-discussion/"
+            },
+            {
+                "question_number": 522,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 523,
+                "link": "https://www.examtopics.com/discussions/microsoft/523/"
+            },
+            {
+                "question_number": 524,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 525,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/93871-exam-az-104-topic-3-question-50-discussion/"
+            },
+            {
+                "question_number": 526,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38792-exam-az-104-topic-3-question-8-discussion/"
+            },
+            {
+                "question_number": 527,
+                "link": "https://www.examtopics.com/discussions/microsoft/259/"
+            },
+            {
+                "question_number": 528,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/125124-exam-az-104-topic-5-question-147-discussion/"
+            },
+            {
+                "question_number": 529,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 530,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/53/"
+            },
+            {
+                "question_number": 531,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/54/"
+            },
+            {
+                "question_number": 532,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 533,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/102336-exam-az-104-topic-3-question-68-discussion/"
+            },
+            {
+                "question_number": 534,
+                "link": "No result found"
+            },
+            {
+                "question_number": 535,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/75850-exam-az-104-topic-2-question-1-discussion/"
+            },
+            {
+                "question_number": 536,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 537,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 538,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 539,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 540,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38284-exam-az-104-topic-4-question-43-discussion/"
+            },
+            {
+                "question_number": 541,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/55/"
+            },
+            {
+                "question_number": 542,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 543,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38698-exam-az-104-topic-4-question-24-discussion/"
+            },
+            {
+                "question_number": 544,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38126-exam-az-104-topic-2-question-26-discussion/"
+            },
+            {
+                "question_number": 545,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 546,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 547,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51501-exam-az-104-topic-5-question-47-discussion/"
+            },
+            {
+                "question_number": 548,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51465-exam-az-104-topic-5-question-48-discussion/"
+            },
+            {
+                "question_number": 549,
+                "link": "https://www.examtopics.com/discussions/microsoft/549/"
+            },
+            {
+                "question_number": 550,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/55/"
+            },
+            {
+                "question_number": 551,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/56/"
+            },
+            {
+                "question_number": 552,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 553,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/94003-exam-az-104-topic-3-question-55-discussion/"
+            },
+            {
+                "question_number": 554,
+                "link": "No result found"
+            },
+            {
+                "question_number": 555,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/28116-exam-az-104-topic-5-question-55-discussion/"
+            },
+            {
+                "question_number": 556,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 557,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 558,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39403-exam-az-104-topic-2-question-58-discussion/"
+            },
+            {
+                "question_number": 559,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 560,
+                "link": "https://www.examtopics.com/discussions/checkpoint/view/127598-exam-156-560-topic-1-question-104-discussion/"
+            },
+            {
+                "question_number": 561,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/57/"
+            },
+            {
+                "question_number": 562,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 563,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 564,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 565,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51238-exam-az-104-topic-5-question-56-discussion/"
+            },
+            {
+                "question_number": 566,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51691-exam-az-104-topic-5-question-66-discussion/"
+            },
+            {
+                "question_number": 567,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51363-exam-az-104-topic-5-question-67-discussion/"
+            },
+            {
+                "question_number": 568,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/51363-exam-az-104-topic-5-question-67-discussion/"
+            },
+            {
+                "question_number": 569,
+                "link": "https://www.examtopics.com/discussions/microsoft/569/"
+            },
+            {
+                "question_number": 570,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38274-exam-az-104-topic-4-question-51-discussion/"
+            },
+            {
+                "question_number": 571,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/58/"
+            },
+            {
+                "question_number": 572,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38272-exam-az-104-topic-4-question-57-discussion/"
+            },
+            {
+                "question_number": 573,
+                "link": "No result found"
+            },
+            {
+                "question_number": 574,
+                "link": "https://www.examtopics.com/discussions/microsoft/212/"
+            },
+            {
+                "question_number": 575,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/108484-exam-az-104-topic-5-question-122-discussion/"
+            },
+            {
+                "question_number": 576,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 577,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 578,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/56828-exam-az-104-topic-1-question-1-discussion/"
+            },
+            {
+                "question_number": 579,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 580,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/view/58/"
+            },
+            {
+                "question_number": 581,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 582,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38792-exam-az-104-topic-3-question-8-discussion/"
+            },
+            {
+                "question_number": 583,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 584,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 585,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 586,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38132-exam-az-104-topic-2-question-6-discussion/"
+            },
+            {
+                "question_number": 587,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 588,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 589,
+                "link": "https://www.examtopics.com/discussions/microsoft/212/"
+            },
+            {
+                "question_number": 590,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/59/"
+            },
+            {
+                "question_number": 591,
+                "link": "https://www.examtopics.com/exams/azure/az-104/view/60/"
+            },
+            {
+                "question_number": 592,
+                "link": "https://www.examtopics.com/discussions/microsoft/212/"
+            },
+            {
+                "question_number": 593,
+                "link": "https://www.examtopics.com/discussions/microsoft/593/"
+            },
+            {
+                "question_number": 594,
+                "link": "No result found"
+            },
+            {
+                "question_number": 595,
+                "link": "https://www.examtopics.com/discussions/microsoft/212/"
+            },
+            {
+                "question_number": 596,
+                "link": "https://www.examtopics.com/discussions/microsoft/212/"
+            },
+            {
+                "question_number": 597,
+                "link": "https://www.examtopics.com/discussions/microsoft/212/"
+            },
+            {
+                "question_number": 598,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/38264-exam-az-104-topic-4-question-5-discussion/"
+            },
+            {
+                "question_number": 599,
+                "link": "https://www.examtopics.com/discussions/microsoft/51/"
+            },
+            {
+                "question_number": 600,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/146314-exam-az-104-topic-6-question-60-discussion/"
+            },
+            {
+                "question_number": 601,
+                "link": "https://www.examtopics.com/discussions/microsoft/78/"
+            },
+            {
+                "question_number": 602,
+                "link": "https://www.examtopics.com/discussions/microsoft/602/"
+            },
+            {
+                "question_number": 603,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/62934-exam-az-104-topic-4-question-63-discussion/"
+            },
+            {
+                "question_number": 604,
+                "link": "https://www.examtopics.com/discussions/microsoft/view/39045-exam-az-104-topic-6-question-4-discussion/"
+            },
+            {
+                "question_number": 605,
+                "link": "https://www.examtopics.com/discussions/microsoft/581/"
+            },
+            {
+                "question_number": 606,
+                "link": "https://www.examtopics.com/exams/microsoft/az-104/"
+            }
+        ];
+        const questionGrid = document.getElementById('questionGrid');
+        const clearButton = document.getElementById('clearButton');
+
+        // Load clicked questions from localStorage
+        const clickedQuestions = JSON.parse(localStorage.getItem('clickedQuestions')) || [];
+
+        // Function to create question boxes
+        function createQuestionBoxes() {
+            data.forEach(item => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.textContent = item.question_number;
+                if (clickedQuestions.includes(item.question_number)) {
+                    questionDiv.classList.add('clicked');
+                }
+
+                // Add click event to open the link in a new tab
+                questionDiv.addEventListener('click', () => {
+                    window.open(item.link, '_blank');
+                    if (!clickedQuestions.includes(item.question_number)) {
+                        clickedQuestions.push(item.question_number);
+                        localStorage.setItem('clickedQuestions', JSON.stringify(clickedQuestions));
+                        questionDiv.classList.add('clicked');
+                    }
+                });
+
+                questionGrid.appendChild(questionDiv);
+            });
+        }
+
+        // Clear all data from localStorage and reset the grid
+        clearButton.addEventListener('click', () => {
+            localStorage.removeItem('clickedQuestions');
+            const allQuestions = document.querySelectorAll('.question');
+            allQuestions.forEach(question => question.classList.remove('clicked'));
+            clickedQuestions.length = 0;
+        });
+
+        // Initialize the page
+        createQuestionBoxes();
+    </script>
+</body>
+
+</html>
